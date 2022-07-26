@@ -1,31 +1,17 @@
-import create from "zustand";
-
-interface BaseState {
-  httpPanes: any;
-  setHttpPanes: (a: any) => void;
-  httpActiveKey: any;
-  setHttpActiveKey: (a: any) => void;
-  collections: any;
-  setCollections: (a: any) => void;
-}
-export const useBaseStore = create<BaseState>(
-  (set, get) => ({
-    // 这边要按模块分，之后再拆
-    // 一、Rest模块
-    //
-    httpPanes: [{ title: "1", key: "123" }],
-    httpActiveKey: "1",
-    setHttpPanes: (httpPanes: any) => {
-      return set(() => ({ httpPanes }));
-    },
-    setHttpActiveKey: (httpActiveKey: any) => {
-      return set(() => ({ httpActiveKey }));
-    },
-    // 二、集合
-    collections: [],
-    setCollections: (collections: any) => {
-      return set(() => ({ collections }));
-    },
-    setCollectionActiveKey: "1",
-  }),
-);
+export const initState = {
+  userinfo: {
+    email: localStorage.getItem('email'),
+  },
+  isLogin: localStorage.getItem('email') ? true : false,
+};
+export const reducer = (prevState:any, action:any) => {
+  const newState = { ...prevState };
+  switch (action.type) {
+    case 'login':
+      newState.userinfo.email = action.payload;
+      newState.isLogin = true;
+      return newState;
+    default:
+      return newState;
+  }
+};
