@@ -6,4 +6,11 @@ export class CollectionService {
       url: '/api/collection',
     });
   }
+
+  // 列出集合
+  static async listCollections() {
+    return axios({
+      url: '/api/directorytree',
+    });
+  }
 }

@@ -10,11 +10,12 @@ const menu = (
     ]}
   />
 );
-const CollectionTitleRender = () => {
+const CollectionTitleRender = ({data}) => {
+    // console.log(data,'data')
   return (
     <div className={'collection-title-render'}>
       <div className={'left'}>
-        <div className='content'>CollectionTitleRender</div>
+        <div className='content'>{data.name}{data.type}</div>
       </div>
       <div className='right'>
         <Dropdown overlay={menu} trigger={['click']}>
