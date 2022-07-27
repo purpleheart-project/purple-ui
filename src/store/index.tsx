@@ -4,7 +4,7 @@ export const initState = {
   },
   isLogin: localStorage.getItem('email') ? true : false,
 };
-export const reducer = (prevState:any, action:any) => {
+export const reducer = (prevState: any, action: any) => {
   const newState = { ...prevState };
   switch (action.type) {
     case 'login':
