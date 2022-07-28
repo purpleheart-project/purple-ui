@@ -17,6 +17,8 @@ const App: React.FC<any> = () => {
     }).then((res) => {
       console.log(res);
     });
+    // const a = new Error()
+    // console.log(a)
   });
 
   return (
