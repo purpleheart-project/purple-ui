@@ -4,56 +4,88 @@ import { DownOutlined, SettingOutlined } from '@ant-design/icons';
 import Setting from '../setting';
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from '@emotion/styled';
+import SmartButton from "../smart/Button";
 type Props = {
   userinfo: any;
   workspaces: any[];
 };
+
+const RequesterHeader = styled.div`
+  padding: 7px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const RequesterHeaderSectionLeft = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const RequesterHeaderSectionRight = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const TopNavigationButtons = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const TopNavigationButton = styled.div`
+  display: flex;
+  align-items: center;
+`;
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
   const [isSettingModalVisible, setIsSettingModalVisible] = useState(false);
   return (
     <>
-      <div className={'app-header'}>
-        <Space className={'left'}>
-          <a
-            className={'app-name'}
-            onClick={() => {
-              // useNavigate()('/')
-              _useNavigate('/');
-            }}
-          >
-            AREX
-          </a>
-          <AppGitHubStarButton />
-          <Dropdown
-            overlay={
-              <Menu
-                items={workspaces.map((workspace) => {
-                  return {
-                    key: workspace.id,
-                    label: (
-                      <a
-                        onClick={() => {
-                          window.location.href = `/${workspace.id}/workspace/${workspace.workspaceName}`;
-                        }}
-                      >
-                        {workspace.workspaceName}
-                      </a>
-                    ),
-                  };
-                })}
-              />
-            }
-          >
-            <span onClick={(e) => e.preventDefault()}>
-              <Space>
-                Workspaces
-                <DownOutlined />
-              </Space>
-            </span>
-          </Dropdown>
-        </Space>
-        <div className={'right'}>
+      <RequesterHeader>
+        <RequesterHeaderSectionLeft>
+          <TopNavigationButtons>
+              <TopNavigationButton>
+                  {/*<button*/}
+                  {/*    className={'app-name'}*/}
+                  {/*    onClick={() => {*/}
+                  {/*        _useNavigate('/');*/}
+                  {/*    }}*/}
+                  {/*>*/}
+                  {/*    */}
+                  {/*</button>*/}
+                  <SmartButton>
+                      AREX
+                  </SmartButton>
+              </TopNavigationButton>
+
+            <AppGitHubStarButton />
+            <Dropdown
+              overlay={
+                <Menu
+                  items={workspaces.map((workspace) => {
+                    return {
+                      key: workspace.id,
+                      label: (
+                        <a
+                          onClick={() => {
+                            window.location.href = `/${workspace.id}/workspace/${workspace.workspaceName}`;
+                          }}
+                        >
+                          {workspace.workspaceName}
+                        </a>
+                      ),
+                    };
+                  })}
+                />
+              }
+            >
+              <span onClick={(e) => e.preventDefault()}>
+                <Space>
+                  Workspaces
+                  <DownOutlined />
+                </Space>
+              </span>
+            </Dropdown>
+          </TopNavigationButtons>
+        </RequesterHeaderSectionLeft>
+        <RequesterHeaderSectionRight>
           <div className='hover-wrap'>
             <Dropdown
               trigger={['click']}
@@ -115,8 +147,8 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
               </span>
             </Dropdown>
           </div>
-        </div>
-      </div>
+        </RequesterHeaderSectionRight>
+      </RequesterHeader>
       {/*模态框*/}
       <Setting isModalVisible={isSettingModalVisible} setModalVisible={setIsSettingModalVisible} />
     </>
