@@ -9,12 +9,6 @@ export default [
   },
   {
     path: '/',
-    element: <MainBox />,
-    children: [
-      {
-        path: '/user',
-        element: <Admin />,
-      },
-    ],
+    element: <MainBox />
   },
 ];

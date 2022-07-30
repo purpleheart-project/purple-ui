@@ -22,6 +22,7 @@ const Collection = ({activateKeyOfOperatingAreaInMainbox,cRef}) => {
   }));
 
   useMount(() => {
+    console.log('怪哉一边')
     CollectionService.listCollections().then((res) => {
       // 关键遍历的地方
       function bianli(arr) {

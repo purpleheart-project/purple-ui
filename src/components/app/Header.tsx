@@ -5,7 +5,9 @@ import Setting from '../setting';
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import SmartButton from "../smart/Button";
+import SmartButton from '../smart/Button';
+import HoverWrapper from '../smart/HoverWrapper';
+import { css } from '@emotion/react';
 type Props = {
   userinfo: any;
   workspaces: any[];
@@ -15,6 +17,13 @@ const RequesterHeader = styled.div`
   padding: 7px;
   display: flex;
   justify-content: space-between;
+  .anticon {
+    display: block;
+  }
+
+  .ant-avatar {
+    display: block;
+  }
 `;
 
 const RequesterHeaderSectionLeft = styled.div`
@@ -32,6 +41,10 @@ const TopNavigationButtons = styled.div`
 const TopNavigationButton = styled.div`
   display: flex;
   align-items: center;
+  padding: 4px 6px;
+`;
+const DownOutlinedCx = styled(DownOutlined)`
+  font-size: 10px;
 `;
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
@@ -41,52 +54,63 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
       <RequesterHeader>
         <RequesterHeaderSectionLeft>
           <TopNavigationButtons>
-              <TopNavigationButton>
-                  {/*<button*/}
-                  {/*    className={'app-name'}*/}
-                  {/*    onClick={() => {*/}
-                  {/*        _useNavigate('/');*/}
-                  {/*    }}*/}
-                  {/*>*/}
-                  {/*    */}
-                  {/*</button>*/}
-                  <SmartButton>
-                      AREX
-                  </SmartButton>
-              </TopNavigationButton>
+            <TopNavigationButton>
+              <HoverWrapper
+                css={css`
+                  padding: 0 6px;
+                `}
+              >
+                <SmartButton>AREX</SmartButton>
+              </HoverWrapper>
+            </TopNavigationButton>
 
-            <AppGitHubStarButton />
-            <Dropdown
-              overlay={
-                <Menu
-                  items={workspaces.map((workspace) => {
-                    return {
-                      key: workspace.id,
-                      label: (
-                        <a
-                          onClick={() => {
-                            window.location.href = `/${workspace.id}/workspace/${workspace.workspaceName}`;
-                          }}
-                        >
-                          {workspace.workspaceName}
-                        </a>
-                      ),
-                    };
-                  })}
-                />
-              }
-            >
-              <span onClick={(e) => e.preventDefault()}>
-                <Space>
-                  Workspaces
-                  <DownOutlined />
-                </Space>
-              </span>
-            </Dropdown>
+            <TopNavigationButton>
+              <HoverWrapper
+                css={css`
+                  padding: 0 6px;
+                `}
+              >
+                <Dropdown
+                  overlay={
+                    <Menu
+                      items={workspaces.map((workspace) => {
+                        return {
+                          key: workspace.id,
+                          label: (
+                            <SmartButton
+                              onClick={() => {
+                                window.location.href = `/${workspace.id}/workspace/${workspace.workspaceName}`;
+                              }}
+                            >
+                              {workspace.workspaceName}
+                            </SmartButton>
+                          ),
+                        };
+                      })}
+                    />
+                  }
+                >
+                  <SmartButton onClick={(e) => e.preventDefault()}>
+                    <Space>
+                      Workspaces
+                      <DownOutlinedCx />
+                    </Space>
+                  </SmartButton>
+                </Dropdown>
+              </HoverWrapper>
+            </TopNavigationButton>
+            <TopNavigationButton>
+              <AppGitHubStarButton />
+            </TopNavigationButton>
           </TopNavigationButtons>
         </RequesterHeaderSectionLeft>
         <RequesterHeaderSectionRight>
-          <div className='hover-wrap'>
+          <HoverWrapper
+            css={css`
+              padding: 0 6px;
+              width: 32px;
+            `}
+          >
             <Dropdown
               trigger={['click']}
               overlay={
@@ -108,14 +132,21 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                 />
               }
             >
-              <span onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <SettingOutlined style={{ color: '#6B6B6B' }} />
-                </Space>
-              </span>
+              <SmartButton onClick={(e) => e.preventDefault()}>
+                <div>
+                  <SettingOutlined
+                    style={{ color: '#6B6B6B', fontSize: '16px'}}
+                  />
+                </div>
+              </SmartButton>
             </Dropdown>
-          </div>
-          <div className={'hover-wrap'}>
+          </HoverWrapper>
+          <HoverWrapper
+            css={css`
+              padding: 0 6px;
+              width: 32px;
+            `}
+          >
             <Dropdown
               trigger={['click']}
               overlay={
@@ -141,12 +172,12 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
               }
             >
               <span onClick={(e) => e.preventDefault()}>
-                <Space>
+                <div>
                   <Avatar size={20}>{userinfo.email[0]}</Avatar>
-                </Space>
+                </div>
               </span>
             </Dropdown>
-          </div>
+          </HoverWrapper>
         </RequesterHeaderSectionRight>
       </RequesterHeader>
       {/*模态框*/}

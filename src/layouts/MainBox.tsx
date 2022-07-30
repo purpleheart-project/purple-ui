@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import {useContext, useRef, useState} from 'react';
+import { FC, useContext, useRef, useState } from 'react';
 import { GlobalContext } from '../App';
 import { Button, Divider, Menu, Space, Tabs } from 'antd';
 import AppHeader from '../components/app/Header';
@@ -12,161 +12,124 @@ import Collection from '../components/collection';
 import RequestPage from '../pages/collection/Request';
 import FolderPage from '../pages/collection/Folder';
 import ExamplePage from '../pages/collection/Example';
-import {treeFind} from "../helpers/collection/util";
+import { treeFind } from '../helpers/collection/util';
+import styled from '@emotion/styled';
 const { TabPane } = Tabs;
-const menuItems = [
-  {
-    key: 'collection',
-    label: 'Collection',
-    icon: <GlobalOutlined />,
-    disabled: false,
-  },
-  {
-    key: 'replay',
-    label: 'Replay',
-    icon: <FileOutlined />,
-    disabled: false,
-  },
-  {
-    key: 'environment',
-    label: 'Environment',
-    icon: <GoldOutlined />,
-    disabled: true,
-  },
-];
+
+const RequesterLeftSidebarWrapper = styled.div``;
+const RequesterSidebarHorizontalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+`;
+const RequesterSidebarHorizontalHeaderLeftContainer = styled.div`
+  .anticon {
+    margin-right: 4px;
+  }
+`;
+const RequesterSidebarHorizontalHeaderRightContainer = styled.div`
+  padding: 10px;
+`;
+const RequesterLeftSidebarContainer = styled.div`
+  display: flex;
+  width: 100%;
+`;
+const RequesterLeftSidebarHeader = styled(Tabs)`
+  width: 100%;
+`;
+const RequesterLeftSidebar = styled.div`
+  flex: 1;
+  overflow: hidden;
+`;
+
+const RequesterBuilder = styled.div``;
 
 const MainBox = () => {
   const value = useContext(GlobalContext);
   console.log(value.state.isLogin, 'value');
   // *************侧边栏**************************
-  const [siderMenuSelectedKey, setSiderMenuSelectedKey] = useState('collection');
-
   // mainbox只管理这一个状态，其他都交给集合、环境这些组件内管理状态
-  const [operatingArea, setOperatingArea] = useState([
-    // {
-    //   areaType: 'requestPage',
-    //   key:'1'
-    // },
-    // {
-    //   areaType: 'examplePage',
-    //   key:'2'
-    // },
-    // {
-    //   areaType: 'folderPage',
-    //   key:'3'
-    // },
-  ]);
-
-  function activateKeyOfOperatingArea(keys) {
-    console.log(keys, 'sss');
-
-    const collectionTreeData = childRef.current.changeVal()
-
-    console.log(treeFind(collectionTreeData,node=>node.key === keys[0]),123)
-
-    const treeFindItem = treeFind(collectionTreeData,node=>node.key === keys[0])
-
-    setOperatingArea([
+  const [pages, setPages] = useState([]);
+  function activateKeyOfpages(keys) {
+    const collectionTreeData = childRef.current.changeVal();
+    const treeFindItem = treeFind(collectionTreeData, (node) => node.key === keys[0]);
+    setPages([
+      ...pages,
       {
-        areaType: treeFindItem.type === 3?'folderPage':'requestPage',
-        key: keys[0],
+        areaType: treeFindItem.type === 3 ? 'folderPage' : 'requestPage',
+        key: String(Math.random()),
       },
     ]);
   }
 
   const childRef = useRef();
-  const updateChildState = (keys) => {
-    // changeVal就是子组件暴露给父组件的方法
-    // console.log(childRef.current.changeVal(),'childRef.current.changeVal()')
-  };
+  const updateChildState = (keys) => {};
   return (
     <div>
       <AppHeader userinfo={{ email: 'tzhangm' }} workspaces={[]} />
       <Divider style={{ margin: '0' }} />
-      <DraggableLayout dir={'horizontal'} range={[15, 40]}>
-        {/*侧边栏*/}
-        <div style={{ backgroundColor: 'white' }}>
-          <Space
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '10px',
-            }}
-          >
-            <div>
-              <GlobalOutlined style={{ marginRight: '8px' }} />
-            </div>
-            <Space>
-              <Button onClick={updateChildState}>asfas</Button>
-            </Space>
-          </Space>
-          <Divider style={{ margin: '0' }} />
-          <div style={{ display: 'flex' }} className={'tool-table'}>
-            <Menu className={'left-menu'} mode='vertical' items={menuItems} />
-            {/*flex布局需要overflow:'hidden'内部元素出滚动条*/}
-            <div style={{ flex: '1', overflow: 'hidden' }}>
-              <div
-                style={{
-                  display: siderMenuSelectedKey === 'collection' ? 'block' : 'none',
-                }}
-              >
-                <Collection
+      <DraggableLayout
+        firstNode={
+          <RequesterLeftSidebarWrapper>
+            <RequesterSidebarHorizontalHeader>
+              <RequesterSidebarHorizontalHeaderLeftContainer>
+                <GlobalOutlined />
+                <span>Canyon</span>
+              </RequesterSidebarHorizontalHeaderLeftContainer>
+              <RequesterSidebarHorizontalHeaderRightContainer>
+                <Button size={'small'} onClick={updateChildState}>
+                  Import
+                </Button>
+              </RequesterSidebarHorizontalHeaderRightContainer>
+            </RequesterSidebarHorizontalHeader>
+            <Divider style={{ margin: '0' }} />
+            <RequesterLeftSidebarContainer>
+              {/*<RequesterLeftSidebarHeader />*/}
+              <RequesterLeftSidebarHeader tabPosition={'left'}>
+                <TabPane tab='Collections' key='1'>
+                  <Collection
                     cRef={childRef}
-                  activateKeyOfOperatingAreaInMainbox={(keys) => {
-                    activateKeyOfOperatingArea(keys);
-                  }}
-                ></Collection>
-              </div>
-              <div
-                style={{
-                  display: siderMenuSelectedKey === 'environment' ? 'block' : 'none',
-                }}
-              >
-                <Environment />
-              </div>
-            </div>
-          </div>
-        </div>
-        {/*主区域*/}
-        <div style={{ padding: '10px' }}>
-          <Tabs type='editable-card'>
-            {operatingArea.map((operatingAreaItem) => {
-              return (
-                <TabPane
-                  tab={'yi'}
-                  key={operatingAreaItem.key}
-                  closable={operatingAreaItem.closable}
-                >
-                  {/*{*/}
-                  {/*  (              if (operatingAreaItem.areaType === 'requestPage') {*/}
-                  {/*  return <RequestPage />;*/}
-                  {/*}*/}
-                  {/*  if (operatingAreaItem.areaType === 'examplePage') {*/}
-                  {/*  return <ExamplePage></ExamplePage>;*/}
-                  {/*}*/}
-                  {/*  if (operatingAreaItem.areaType === 'folderPage') {*/}
-                  {/*  return <FolderPage></FolderPage>;*/}
-                  {/*})*/}
-                  {/*}*/}
-
-                  {(() => {
-                    switch (operatingAreaItem.areaType) {
-                      case 'requestPage':
-                        return <RequestPage />;
-                      case 'examplePage':
-                        return <ExamplePage />;
-                      case 'folderPage':
-                        return <FolderPage />;
-                      default:
-                        return null;
-                    }
-                  })()}
+                    activateKeyOfOperatingAreaInMainbox={(keys) => {
+                      activateKeyOfpages(keys);
+                    }}
+                  />
                 </TabPane>
-              );
-            })}
-          </Tabs>
-        </div>
-      </DraggableLayout>
+                <TabPane tab='Environments' key='2'>
+                  <Environment />
+                </TabPane>
+              </RequesterLeftSidebarHeader>
+            </RequesterLeftSidebarContainer>
+          </RequesterLeftSidebarWrapper>
+        }
+        secondNode={
+          <RequesterBuilder>
+            <Tabs type='editable-card'>
+              {pages.map((page) => {
+                return (
+                  <TabPane tab={'yi'} key={page.key} closable={page.closable}>
+                    {(() => {
+                      switch (page.areaType) {
+                        case 'requestPage':
+                          return <RequestPage />;
+                        case 'examplePage':
+                          return <ExamplePage />;
+                        case 'folderPage':
+                          return <FolderPage />;
+                        default:
+                          return null;
+                      }
+                    })()}
+                  </TabPane>
+                );
+              })}
+            </Tabs>
+          </RequesterBuilder>
+        }
+        direction={'horizontal'}
+        limitRange={[15, 40]}
+        lineWidth={100}
+      />
     </div>
   );
 };

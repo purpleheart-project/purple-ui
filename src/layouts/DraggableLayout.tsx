@@ -1,88 +1,108 @@
-import { useMount } from 'react-use';
-import { useRef } from 'react';
-import './DraggableLayout.less';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import React, { FC, ReactNode, useEffect, useRef } from 'react';
 
-const styleMap: any = {
-  horizontal: {
-    firstStyle: {
-      width: `calc(30% - 5px)`,
-    },
-    secondStyle: {
-      width: `calc(70% - 5px)`,
-    },
-  },
-  vertical: {
-    firstStyle: {
-      height: `calc(75% - 5px)`,
-    },
-    secondStyle: {
-      height: `calc(25% - 5px)`,
-    },
-  },
-};
+// import { Color } from '../style/theme';
+
+type Direction = 'horizontal' | 'vertical';
+
+const DividerLine = styled.div<{ direction: Direction }>`
+  width: ${(props) => (props.direction === 'vertical' ? '100%' : '1px')};
+  height: ${(props) => (props.direction === 'vertical' ? '1px' : '100%')};
+  background-color: #eee;
+  transition: box-shadow 0.2s;
+}
+`;
 
 // 原理 通过拖动draggable-line，计算偏移量
-const DraggableLayout = (props: any) => {
+const DraggableLayout: FC<{
+  firstNode: ReactNode;
+  secondNode: ReactNode;
+  direction: Direction;
+  limitRange?: [number, number];
+  lineWidth?: number;
+}> = (props) => {
+  const {
+    firstNode,
+    secondNode,
+    direction = 'horizontal',
+    limitRange: [min = 30, max = 70] = [30, 70],
+    lineWidth = 10,
+  } = props;
+
   const draggableLineRef = useRef(null);
   const draggableLayoutRef = useRef(null);
   const firstRef = useRef(null);
   const secondRef = useRef(null);
-  const { dir,range } = props;
+
+  const styleMap = {
+    horizontal: {
+      firstStyle: {
+        width: `calc(${(max + min) / 2}% - ${lineWidth}px)`,
+      },
+      secondStyle: {
+        width: `calc(${100 - (max + min) / 2}% - ${lineWidth}px)`,
+      },
+    },
+    vertical: {
+      firstStyle: {
+        height: `calc(${100 - min}% - 5px)`,
+      },
+      secondStyle: {
+        height: `calc(${min}% - 5px)`,
+      },
+    },
+  };
+
   const drag = () => {
     const draggableDom: any = draggableLineRef.current;
     const contentDom: any = draggableLayoutRef.current;
     const firstDom: any = firstRef.current;
     const secondDom: any = secondRef.current;
     draggableDom.onmousedown = (e: any) => {
-      let _e = e;
-      // const dir = "vertical"; // 设置好方向 可通过变量控制默认水平方向 horizontal | vertical
-      const startCoordinate = dir === 'horizontal' ? _e.clientX : _e.clientY; // 获取第一次点击的横坐标
-      const secondDomStartSize: number =
-        dir === 'horizontal' ? secondDom.offsetWidth : secondDom.offsetHeight; // 获取到元素的宽度
+      // 设置好方向 可通过变量控制默认水平方向 horizontal | vertical
+      const startCoordinate = direction === 'horizontal' ? e.clientX : e.clientY; // 获取第一次点击的横坐标
 
-      // 移动过程中对左右元素宽度计算赋值
-      document.onmousemove = (_event: any) => {
-        _e = _event;
-        // 可扩展上下拖动等
-        switch (dir) {
-          case 'horizontal':
-            const moveOffset: number = _e.clientX - startCoordinate;
-            // @ts-ignore
-            const baifenbi1 =
-              // @ts-ignore
-              (`${contentDom.offsetWidth - 15 - secondDomStartSize + moveOffset}` /
-                (contentDom.offsetWidth - 10)) *
-              100;
-            // @ts-ignore
-            const baifenbi2 =
-              ((secondDomStartSize - moveOffset + 5) / (contentDom.offsetWidth - 10)) * 100;
+      const fDomStartSize =
+        direction === 'horizontal' ? firstDom.offsetWidth : firstDom.offsetHeight; // 获取到元素的宽度
 
+      // 移动过程中对两元素宽度计算赋值
+      document.onmousemove = (_e: any) => {
+        if (direction === 'horizontal') {
+          const moveOffset: number = _e.clientX - startCoordinate;
 
-            if (baifenbi1<range[1] && baifenbi1>range[0]){
-              firstDom.style.width = `calc(${baifenbi1}% - 5px)`;
-              secondDom.style.width = `calc(${baifenbi2}% - 5px)`;
+          console.log(
+            fDomStartSize,
+            'fDomStartSize',
+            secondDom.offsetWidth,
+            fDomStartSize + secondDom.offsetWidth + 2 * lineWidth,
+            's',
+            contentDom.offsetWidth,
+          );
+          const firstPercentage =
+            ((fDomStartSize + moveOffset) / (contentDom.offsetWidth - 2 * lineWidth)) * 100;
+
+          const firstPercentageComputed: any = (function () {
+            if (firstPercentage > min && firstPercentage < max) {
+              return firstPercentage;
             }
+            if (firstPercentage <= min) {
+              return min;
+            }
+            if (firstPercentage >= max) {
+              return max;
+            }
+          })();
 
-            break;
-
-          case 'vertical':
-            const moveOffset1: number = _e.clientY - startCoordinate;
-            // @ts-ignore
-            const baifenbi4 =
-              // @ts-ignore
-              (`${contentDom.offsetHeight - 15 - secondDomStartSize + moveOffset1}` /
-                (contentDom.offsetHeight - 10)) *
-              100;
-            // @ts-ignore
-            const baifenbi3 =
-              ((secondDomStartSize - moveOffset1 + 5) / (contentDom.offsetHeight - 10)) * 100;
-
-            firstDom.style.height = `calc(${baifenbi4}% - 5px)`;
-            secondDom.style.height = `calc(${baifenbi3}% - 5px)`;
-            break;
-
-          default:
-            break;
+          // firstPercentageComputed 是减去之后的百分比，所以
+          firstDom.style.width = `${
+            ((contentDom.offsetWidth - 2 * lineWidth) * firstPercentageComputed) / 100
+          }px`;
+          // secondDom.style.width = `calc(${100 - firstPercentageComputed}% - ${lineWidth}px)`;
+          secondDom.style.width = `${
+              ((contentDom.offsetWidth - 2 * lineWidth) * (100-firstPercentageComputed)) / 100
+          }px`;
+        } else {
         }
       };
       // 在左侧和右侧元素父容器上绑定松开鼠标解绑拖拽事件
@@ -93,36 +113,31 @@ const DraggableLayout = (props: any) => {
     };
   };
 
-  useMount(() => {
-    drag();
-  });
+  useEffect(() => drag(), []);
 
   return (
     <div
       ref={draggableLayoutRef}
       className={'draggable-layout'}
-      style={{ display: dir === 'horizontal' ? 'flex' : 'block' }}
+      style={{ display: direction === 'horizontal' ? 'flex' : 'block', height: '100%' }}
     >
-      <div ref={firstRef} style={styleMap[dir].firstStyle}>
-        {props.children[0]}
+      <div ref={firstRef} style={styleMap[direction].firstStyle}>
+        <div>{firstNode}</div>
       </div>
+
       <div
         ref={draggableLineRef}
-        className={'draggable-line'}
-        style={{
-          cursor: dir === 'horizontal' ? 'ew-resize' : 'ns-resize',
-          padding: `${dir === 'horizontal' ? '0' : '10'}px ${dir === 'horizontal' ? '10' : '0'}px`,
-        }}
+        css={css`
+          cursor: ${direction === 'horizontal' ? 'ew-resize' : 'ns-resize'};
+          padding: ${direction === 'horizontal' ? `0 ${lineWidth}px` : `${lineWidth}px 0`};
+          z-index: 100;
+        `}
       >
-        <div
-          style={{
-            width: `${dir === 'horizontal' ? '1px' : '100%'}`,
-            height: `${dir === 'horizontal' ? '100%' : '1px'}`,
-          }}
-        />
+        <DividerLine direction={direction} />
       </div>
-      <div ref={secondRef} style={styleMap[dir].secondStyle}>
-        {props.children[1]}
+
+      <div ref={secondRef} style={styleMap[direction].secondStyle}>
+        <div>{secondNode}</div>
       </div>
     </div>
   );
