@@ -62,26 +62,14 @@ const DraggableLayout: FC<{
     draggableDom.onmousedown = (e: any) => {
       // 设置好方向 可通过变量控制默认水平方向 horizontal | vertical
       const startCoordinate = direction === 'horizontal' ? e.clientX : e.clientY; // 获取第一次点击的横坐标
-
       const fDomStartSize =
         direction === 'horizontal' ? firstDom.offsetWidth : firstDom.offsetHeight; // 获取到元素的宽度
-
       // 移动过程中对两元素宽度计算赋值
       document.onmousemove = (_e: any) => {
         if (direction === 'horizontal') {
           const moveOffset: number = _e.clientX - startCoordinate;
-
-          console.log(
-            fDomStartSize,
-            'fDomStartSize',
-            secondDom.offsetWidth,
-            fDomStartSize + secondDom.offsetWidth + 2 * lineWidth,
-            's',
-            contentDom.offsetWidth,
-          );
           const firstPercentage =
             ((fDomStartSize + moveOffset) / (contentDom.offsetWidth - 2 * lineWidth)) * 100;
-
           const firstPercentageComputed: any = (function () {
             if (firstPercentage > min && firstPercentage < max) {
               return firstPercentage;
@@ -93,16 +81,13 @@ const DraggableLayout: FC<{
               return max;
             }
           })();
-
-          // firstPercentageComputed 是减去之后的百分比，所以
+          // firstPercentageComputed 是减去之后的百分比
           firstDom.style.width = `${
             ((contentDom.offsetWidth - 2 * lineWidth) * firstPercentageComputed) / 100
           }px`;
-          // secondDom.style.width = `calc(${100 - firstPercentageComputed}% - ${lineWidth}px)`;
           secondDom.style.width = `${
-              ((contentDom.offsetWidth - 2 * lineWidth) * (100-firstPercentageComputed)) / 100
+            ((contentDom.offsetWidth - 2 * lineWidth) * (100 - firstPercentageComputed)) / 100
           }px`;
-        } else {
         }
       };
       // 在左侧和右侧元素父容器上绑定松开鼠标解绑拖拽事件
@@ -122,7 +107,13 @@ const DraggableLayout: FC<{
       style={{ display: direction === 'horizontal' ? 'flex' : 'block', height: '100%' }}
     >
       <div ref={firstRef} style={styleMap[direction].firstStyle}>
-        <div>{firstNode}</div>
+        <div
+          css={css`
+            width: calc(100% + 100px);
+          `}
+        >
+          {firstNode}
+        </div>
       </div>
 
       <div
@@ -131,13 +122,21 @@ const DraggableLayout: FC<{
           cursor: ${direction === 'horizontal' ? 'ew-resize' : 'ns-resize'};
           padding: ${direction === 'horizontal' ? `0 ${lineWidth}px` : `${lineWidth}px 0`};
           z-index: 100;
+          //background-color: salmon;
         `}
       >
         <DividerLine direction={direction} />
       </div>
 
       <div ref={secondRef} style={styleMap[direction].secondStyle}>
-        <div>{secondNode}</div>
+        <div
+          css={css`
+            width: calc(100% + 100px);
+            transform: translateX(-100px);
+          `}
+        >
+          {secondNode}
+        </div>
       </div>
     </div>
   );
