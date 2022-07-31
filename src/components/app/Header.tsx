@@ -1,6 +1,6 @@
-import {Avatar, Button, Dropdown, Menu, Space} from 'antd';
+import { Avatar, Button, Dropdown, Menu, Space } from 'antd';
 import AppGitHubStarButton from './GitHubStarButton';
-import {DownOutlined, SettingOutlined, UserAddOutlined} from '@ant-design/icons';
+import { DownOutlined, SettingOutlined, UserAddOutlined } from '@ant-design/icons';
 import Setting from '../setting';
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,6 @@ const RequesterHeader = styled.div`
   padding: 7px;
   display: flex;
   justify-content: space-between;
-
 `;
 
 const RequesterHeaderSectionLeft = styled.div`
@@ -27,7 +26,6 @@ const RequesterHeaderSectionLeft = styled.div`
 const RequesterHeaderSectionRight = styled.div`
   display: flex;
   align-items: center;
-  
 `;
 const TopNavigationButtons = styled.div`
   display: flex;
@@ -44,6 +42,23 @@ const DownOutlinedCx = styled(DownOutlined)`
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
   const [isSettingModalVisible, setIsSettingModalVisible] = useState(false);
+  const SettingMenuItems = [
+    {
+      key: '1',
+      label: <a onClick={() => {}}>Setting</a>,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: '2',
+      label: <a onClick={() => {}}>Privacy Policy</a>,
+    },
+    {
+      key: '3',
+      label: <a onClick={() => {}}>Terms</a>,
+    },
+  ];
   return (
     <>
       <RequesterHeader>
@@ -100,57 +115,32 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
           </TopNavigationButtons>
         </RequesterHeaderSectionLeft>
         <RequesterHeaderSectionRight>
-
-            <Button style={{marginRight:'8px'}} type={'primary'} icon={<UserAddOutlined />}>Invite</Button>
+          <Button style={{ marginRight: '8px' }} type={'primary'} icon={<UserAddOutlined />}>
+            Invite
+          </Button>
 
           <HoverWrapper
             css={css`
               padding: 0 6px;
               width: 32px;
-                .anticon {
-    display: block;
-  }
-
-
+              .anticon {
+                display: block;
+              }
             `}
           >
-            <Dropdown
-              trigger={['click']}
-              overlay={
-                <Menu
-                  items={['Setting'].map((workspace) => {
-                    return {
-                      key: workspace,
-                      label: (
-                        <a
-                          onClick={() => {
-                            setIsSettingModalVisible(true);
-                          }}
-                        >
-                          {workspace}
-                        </a>
-                      ),
-                    };
-                  })}
-                />
-              }
-            >
-              <SmartButton onClick={(e) => e.preventDefault()}>
-                <div>
-                  <SettingOutlined
-                    style={{ color: '#6B6B6B', fontSize: '16px'}}
-                  />
-                </div>
-              </SmartButton>
+            <Dropdown trigger={['click']} overlay={<Menu items={SettingMenuItems} />}>
+              <div>
+                <SettingOutlined style={{ color: '#6B6B6B', fontSize: '16px' }} />
+              </div>
             </Dropdown>
           </HoverWrapper>
           <HoverWrapper
             css={css`
               padding: 0 6px;
               width: 32px;
-                .ant-avatar {
-    display: block;
-  }
+              .ant-avatar {
+                display: block;
+              }
             `}
           >
             <Dropdown

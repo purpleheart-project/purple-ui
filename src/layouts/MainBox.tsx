@@ -1,11 +1,17 @@
 import { Outlet } from 'react-router-dom';
 import { FC, useContext, useRef, useState } from 'react';
 import { GlobalContext } from '../App';
-import { Button, Divider, Menu, Space, Tabs } from 'antd';
+import { Button, Divider, Dropdown, Menu, Select, Space, Tabs } from 'antd';
 import AppHeader from '../components/app/Header';
 import './../components/app/index.less';
 import './../components/collection/index.less';
-import { FileOutlined, GlobalOutlined, GoldOutlined } from '@ant-design/icons';
+import {
+  AppleOutlined,
+  DownOutlined,
+  FileOutlined,
+  GlobalOutlined,
+  GoldOutlined,
+} from '@ant-design/icons';
 import DraggableLayout from './DraggableLayout';
 import Environment from '../components/environment';
 import Collection from '../components/collection';
@@ -14,7 +20,7 @@ import FolderPage from '../pages/collection/Folder';
 import ExamplePage from '../pages/collection/Example';
 import { treeFind } from '../helpers/collection/util';
 import styled from '@emotion/styled';
-import {css} from "@emotion/react";
+import { css } from '@emotion/react';
 const { TabPane } = Tabs;
 
 const RequesterLeftSidebarWrapper = styled.div`
@@ -34,7 +40,7 @@ const RequesterSidebarHorizontalHeaderLeftContainer = styled.div`
   }
 `;
 const RequesterSidebarHorizontalHeaderRightContainer = styled.div`
-  padding: 10px;
+  padding: 6.5px;
 `;
 const RequesterLeftSidebarContainer = styled.div`
   display: flex;
@@ -49,7 +55,45 @@ const RequesterLeftSidebar = styled.div`
   overflow: hidden;
 `;
 
-const RequesterBuilder = styled.div``;
+const RequesterBuilder = styled.div`
+  .ant-tabs-nav-list {
+    .ant-tabs-tab {
+      border-top: none !important;
+      border-radius: 0 !important;
+      background-color: white !important;
+      border-left: none;
+      border-bottom: 1px solid #eee !important;
+      margin-left: 0;
+      transition: none !important;
+    }
+    .ant-tabs-tab-active {
+      border-bottom: 1px solid white !important;
+    }
+    .ant-tabs-nav-add {
+      background-color: white;
+      border: none;
+      border-bottom: 1px solid #eee !important;
+    }
+  }
+  .ant-tabs-nav {
+    height: 38px;
+  }
+`;
+
+const menu = (
+  <Menu
+    items={[
+      {
+        key: '1',
+        label: (
+          <a target='_blank' rel='noopener noreferrer' href='https://www.antgroup.com'>
+            1st menu item
+          </a>
+        ),
+      },
+    ]}
+  />
+);
 
 const MainBox = () => {
   const value = useContext(GlobalContext);
@@ -76,9 +120,9 @@ const MainBox = () => {
       <AppHeader userinfo={{ email: 'tzhangm' }} workspaces={[]} />
       <Divider style={{ margin: '0' }} />
       <DraggableLayout
-          css={css`
-height: calc(100vh - 55px);          
-`}
+        css={css`
+          height: calc(100vh - 55px);
+        `}
         firstNode={
           <RequesterLeftSidebarWrapper>
             <RequesterSidebarHorizontalHeader>
@@ -112,11 +156,26 @@ height: calc(100vh - 55px);
           </RequesterLeftSidebarWrapper>
         }
         secondNode={
-          <RequesterBuilder>
-            <Tabs type='editable-card'>
+          <RequesterBuilder className={'sssss'}>
+            <Tabs
+              animated={false}
+              type='editable-card'
+              tabBarExtraContent={
+                <div style={{ padding: '8px 20px', borderLeft: '1px solid #eee' }}>
+                  <Dropdown overlay={menu}>
+                    <span>
+                      <Space>
+                        No Environment
+                        <DownOutlined />
+                      </Space>
+                    </span>
+                  </Dropdown>
+                </div>
+              }
+            >
               {pages.map((page) => {
                 return (
-                  <TabPane tab={'yi'} key={page.key} closable={page.closable}>
+                  <TabPane key={page.key} closable={page.closable}>
                     {(() => {
                       switch (page.areaType) {
                         case 'requestPage':
