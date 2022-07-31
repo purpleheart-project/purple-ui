@@ -14,9 +14,14 @@ import FolderPage from '../pages/collection/Folder';
 import ExamplePage from '../pages/collection/Example';
 import { treeFind } from '../helpers/collection/util';
 import styled from '@emotion/styled';
+import {css} from "@emotion/react";
 const { TabPane } = Tabs;
 
-const RequesterLeftSidebarWrapper = styled.div``;
+const RequesterLeftSidebarWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 const RequesterSidebarHorizontalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -34,6 +39,7 @@ const RequesterSidebarHorizontalHeaderRightContainer = styled.div`
 const RequesterLeftSidebarContainer = styled.div`
   display: flex;
   width: 100%;
+  flex: 1;
 `;
 const RequesterLeftSidebarHeader = styled(Tabs)`
   width: 100%;
@@ -70,6 +76,9 @@ const MainBox = () => {
       <AppHeader userinfo={{ email: 'tzhangm' }} workspaces={[]} />
       <Divider style={{ margin: '0' }} />
       <DraggableLayout
+          css={css`
+height: calc(100vh - 55px);          
+`}
         firstNode={
           <RequesterLeftSidebarWrapper>
             <RequesterSidebarHorizontalHeader>

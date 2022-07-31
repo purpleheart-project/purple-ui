@@ -39,9 +39,11 @@ const DraggableLayout: FC<{
     horizontal: {
       firstStyle: {
         width: `calc(${(max + min) / 2}% - ${lineWidth}px)`,
+        height:"100%"
       },
       secondStyle: {
         width: `calc(${100 - (max + min) / 2}% - ${lineWidth}px)`,
+        height:"100%"
       },
     },
     vertical: {
@@ -103,13 +105,14 @@ const DraggableLayout: FC<{
   return (
     <div
       ref={draggableLayoutRef}
-      className={'draggable-layout'}
-      style={{ display: direction === 'horizontal' ? 'flex' : 'block', height: '100%' }}
+      className={props.className}
+      style={{ display: direction === 'horizontal' ? 'flex' : 'block' }}
     >
       <div ref={firstRef} style={styleMap[direction].firstStyle}>
         <div
           css={css`
-            width: calc(100% + 100px);
+            width: calc(100% + ${lineWidth}px);
+            height: 100%;
           `}
         >
           {firstNode}
@@ -131,8 +134,8 @@ const DraggableLayout: FC<{
       <div ref={secondRef} style={styleMap[direction].secondStyle}>
         <div
           css={css`
-            width: calc(100% + 100px);
-            transform: translateX(-100px);
+            width: calc(100% + ${lineWidth}px);
+            transform: translateX(-${lineWidth}px);
           `}
         >
           {secondNode}

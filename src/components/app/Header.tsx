@@ -1,6 +1,6 @@
-import { Avatar, Dropdown, Menu, Space } from 'antd';
+import {Avatar, Button, Dropdown, Menu, Space} from 'antd';
 import AppGitHubStarButton from './GitHubStarButton';
-import { DownOutlined, SettingOutlined } from '@ant-design/icons';
+import {DownOutlined, SettingOutlined, UserAddOutlined} from '@ant-design/icons';
 import Setting from '../setting';
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,13 +17,7 @@ const RequesterHeader = styled.div`
   padding: 7px;
   display: flex;
   justify-content: space-between;
-  .anticon {
-    display: block;
-  }
 
-  .ant-avatar {
-    display: block;
-  }
 `;
 
 const RequesterHeaderSectionLeft = styled.div`
@@ -33,6 +27,7 @@ const RequesterHeaderSectionLeft = styled.div`
 const RequesterHeaderSectionRight = styled.div`
   display: flex;
   align-items: center;
+  
 `;
 const TopNavigationButtons = styled.div`
   display: flex;
@@ -105,10 +100,18 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
           </TopNavigationButtons>
         </RequesterHeaderSectionLeft>
         <RequesterHeaderSectionRight>
+
+            <Button style={{marginRight:'8px'}} type={'primary'} icon={<UserAddOutlined />}>Invite</Button>
+
           <HoverWrapper
             css={css`
               padding: 0 6px;
               width: 32px;
+                .anticon {
+    display: block;
+  }
+
+
             `}
           >
             <Dropdown
@@ -145,6 +148,9 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
             css={css`
               padding: 0 6px;
               width: 32px;
+                .ant-avatar {
+    display: block;
+  }
             `}
           >
             <Dropdown
