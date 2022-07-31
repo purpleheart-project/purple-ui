@@ -63,7 +63,7 @@ const RequesterBuilder = styled.div`
       background-color: white !important;
       border-left: none;
       border-bottom: 1px solid #eee !important;
-      margin-left: 0;
+      margin-left: 0!important;
       transition: none !important;
     }
     .ant-tabs-tab-active {
