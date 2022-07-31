@@ -128,7 +128,7 @@ const MainBox = () => {
         }
         direction={'horizontal'}
         limitRange={[15, 40]}
-        lineWidth={100}
+        lineWidth={10}
       />
     </div>
   );
