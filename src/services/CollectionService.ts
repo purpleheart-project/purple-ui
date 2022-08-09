@@ -10,7 +10,7 @@ export class CollectionService {
   // 列出集合
   static async listCollections() {
     return axios({
-      url: '/api/directorytree',
+      url: '/api/collection',
     });
   }
 }

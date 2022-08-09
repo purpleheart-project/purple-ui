@@ -100,7 +100,12 @@ const MainBox = () => {
   console.log(value.state.isLogin, 'value');
   // *************侧边栏**************************
   // mainbox只管理这一个状态，其他都交给集合、环境这些组件内管理状态
-  const [pages, setPages] = useState([]);
+  const [pages, setPages] = useState([{
+    type:'requestPage',
+    key:'1',
+    title:'123',
+    areaType:'requestPage'
+  }]);
   function activateKeyOfpages(keys) {
     const collectionTreeData = childRef.current.changeVal();
     const treeFindItem = treeFind(collectionTreeData, (node) => node.key === keys[0]);
@@ -177,8 +182,10 @@ const MainBox = () => {
                 return (
                   <TabPane key={page.key} closable={page.closable}>
                     {(() => {
+                      console.log(page,'pp')
                       switch (page.areaType) {
                         case 'requestPage':
+                          console.log(123)
                           return <RequestPage />;
                         case 'examplePage':
                           return <ExamplePage />;
